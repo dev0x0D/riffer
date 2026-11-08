@@ -93,7 +93,8 @@ public slots:
     Q_INVOKABLE void openPath(const QUrl &url);
     Q_INVOKABLE void togglePlay();
     Q_INVOKABLE void nudgeSpeed(double delta);
-    Q_INVOKABLE void seekRelative(double delta); // arrows; live while playing
+    Q_INVOKABLE void nudgeVolume(double delta);  // arrow up/down, ±delta
+    Q_INVOKABLE void seekRelative(double delta); // arrows; moves the start cursor while stopped
     Q_INVOKABLE void select(double start, double end);
     Q_INVOKABLE void clearSelection();
     Q_INVOKABLE void beginSection();             // M: start, M again: end

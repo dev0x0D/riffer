@@ -38,7 +38,8 @@ see the whole track, and loop passages until they sit under your fingers.
 | `[` `]` | Slower / faster by 5% |
 | `{` `}` | Slower / faster by 1% |
 | `1` `2` `3` `4` | Speed presets 100%, 95%, 85%, 75% |
-| `←` `→` | Nudge the position 2 s (`Shift`: 10 s); while stopped it moves the start cursor |
+| `←` `→` | Nudge the start cursor 0.5 s (`Shift`: 5 s) |
+| `↑` `↓` | Volume ±5% |
 | `I` / `O` | Selection start / end at the playhead |
 | `M` | Mark a section (press twice), `Shift+M` from selection |
 | `Tab` | Sections panel |

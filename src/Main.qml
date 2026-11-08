@@ -102,10 +102,12 @@ ApplicationWindow {
     Shortcut { sequence: "2"; enabled: !win.typing; onActivated: backend.setSpeed(0.95) }
     Shortcut { sequence: "3"; enabled: !win.typing; onActivated: backend.setSpeed(0.85) }
     Shortcut { sequence: "4"; enabled: !win.typing; onActivated: backend.setSpeed(0.75) }
-    Shortcut { sequence: "Left"; enabled: !win.typing; onActivated: backend.seekRelative(-2) }
-    Shortcut { sequence: "Right"; enabled: !win.typing; onActivated: backend.seekRelative(2) }
-    Shortcut { sequence: "Shift+Left"; enabled: !win.typing; onActivated: backend.seekRelative(-10) }
-    Shortcut { sequence: "Shift+Right"; enabled: !win.typing; onActivated: backend.seekRelative(10) }
+    Shortcut { sequence: "Left"; enabled: !win.typing; onActivated: backend.seekRelative(-0.5) }
+    Shortcut { sequence: "Right"; enabled: !win.typing; onActivated: backend.seekRelative(0.5) }
+    Shortcut { sequence: "Shift+Left"; enabled: !win.typing; onActivated: backend.seekRelative(-5) }
+    Shortcut { sequence: "Shift+Right"; enabled: !win.typing; onActivated: backend.seekRelative(5) }
+    Shortcut { sequence: "Up"; enabled: !win.typing; onActivated: backend.nudgeVolume(0.05) }
+    Shortcut { sequence: "Down"; enabled: !win.typing; onActivated: backend.nudgeVolume(-0.05) }
     Shortcut { sequence: "Home"; enabled: !win.typing; onActivated: { backend.setCursor(0); win.centerOn(0) } }
     Shortcut { sequence: "End"; enabled: !win.typing; onActivated: { backend.setCursor(Math.max(0, backend.duration - 0.05)); win.centerOn(backend.cursor) } }
     Shortcut {
@@ -494,17 +496,51 @@ ApplicationWindow {
                         }
                     }
 
-                    RowLayout {
-                        spacing: 6
-                        Label { text: qsTr("Vol"); font.pixelSize: 11; color: "#8a8a92" }
-                        Slider {
-                            id: volumeSlider
-                            from: 0
-                            to: 1
-                            stepSize: 0.01
-                            value: backend.volume
-                            Layout.preferredWidth: 90
-                            onMoved: backend.setVolume(value)
+                    // Volume lives in a button with a popover slider, so the
+                    // bar keeps a single visible slider (speed).
+                    Button {
+                        id: volumeButton
+                        flat: true
+                        font.pixelSize: 11
+                        text: qsTr("Vol")
+                        onClicked: volumePopup.open()
+
+                        Popup {
+                            id: volumePopup
+                            y: -implicitHeight - 8
+                            x: parent.width - width
+                            padding: 12
+                            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+                            background: Rectangle {
+                                color: "#1c1c22"
+                                radius: 8
+                                border.color: "#26ffffff"
+                            }
+                            contentItem: RowLayout {
+                                spacing: 10
+                                Label {
+                                    text: qsTr("Vol")
+                                    font.pixelSize: 11
+                                    color: "#8a8a92"
+                                }
+                                Slider {
+                                    id: volumeSlider
+                                    from: 0
+                                    to: 1
+                                    stepSize: 0.01
+                                    value: backend.volume
+                                    implicitWidth: 150
+                                    onMoved: backend.setVolume(value)
+                                }
+                                Label {
+                                    text: Math.round(backend.volume * 100) + "%"
+                                    color: "#d8d8de"
+                                    font.pixelSize: 11
+                                    font.family: "monospace"
+                                    Layout.preferredWidth: 34
+                                    horizontalAlignment: Text.AlignRight
+                                }
+                            }
                         }
                     }
                 }

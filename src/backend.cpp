@@ -269,9 +269,9 @@ void Backend::seekRelative(double delta) {
         m_player.seek(qBound(base, m_playhead + delta, loopEnd() - 0.01));
         setPlayhead(m_player.inputPosition());
     } else {
-        // While stopped the arrows fine-tune around the visible playhead,
-        // which is where the eye is after a stop mid-track.
-        setCursor(qBound(0.0, m_playhead + delta, m_duration));
+        // While stopped the arrows walk the start cursor in small steps,
+        // from where the cursor stands — never from the playhead bookmark.
+        setCursor(qBound(0.0, m_cursor + delta, m_duration));
         emit centerRequested(m_cursor);
     }
 }
@@ -286,6 +286,10 @@ void Backend::setVolume(double volume) {
 
 void Backend::nudgeSpeed(double delta) {
     setSpeed(m_player.speed() + delta);
+}
+
+void Backend::nudgeVolume(double delta) {
+    m_player.setVolume(m_player.volume() + delta); // Player clamps to 0..1
 }
 
 // -------------------------------------------------------------- sections ---
