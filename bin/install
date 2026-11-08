@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+"$ROOT/bin/build"
+cd "$ROOT/pkgbuild"
+makepkg -f
+# This machine elevates through pkexec rather than sudo, and pkexec starts in
+# /root, so the package path must be absolute.
+pkexec pacman -U --noconfirm "$(ls -t "$ROOT"/pkgbuild/*.pkg.tar.* | grep -v debug | head -1)"

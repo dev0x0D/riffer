@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+Name=Riffer
+Name[ru]=Riffer
+Comment=Slow down music to practice along
+Comment[da]=Sæt musikken ned for at øve med
+Comment[de]=Musik zum Üben verlangsamen
+Comment[es]=Ralentiza la música para practicar
+Comment[fr]=Ralentissez la musique pour travailler
+Comment[pt_BR]=Desacelere a música para praticar
+Comment[ru]=Замедляйте музыку, чтобы разучивать произведения
+Exec=riffer %f
+Icon=riffer
+Terminal=false
+Categories=AudioVideo;Audio;Music;Education;
+MimeType=audio/mpeg;audio/x-mpeg;audio/mp3;audio/x-mp3;audio/wav;audio/x-wav;audio/wave;audio/x-pn-wav;
+StartupWMClass=riffer

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Makes riffer the default application for MP3 and WAV files for this user.
+set -eu
+
+for mime in audio/mpeg audio/x-mpeg audio/mp3 audio/x-mp3 audio/wav audio/x-wav audio/wave audio/x-pn-wav; do
+    xdg-mime default riffer.desktop "$mime"
+done
+echo "riffer is now the default player for MP3 and WAV files."
