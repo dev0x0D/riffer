@@ -486,10 +486,6 @@ void Backend::loadSidecarState() {
         m_player.setSpeed(saved.value(QStringLiteral("speed")).toDouble());
     if (saved.contains(QStringLiteral("volume")))
         m_player.setVolume(saved.value(QStringLiteral("volume")).toDouble());
-    if (saved.contains(QStringLiteral("cursor"))) {
-        m_cursor = qBound(0.0, saved.value(QStringLiteral("cursor")).toDouble(), m_duration);
-        emit cursorChanged();
-    }
     const QJsonObject selection = saved.value(QStringLiteral("selection")).toObject();
     if (selection.contains(QStringLiteral("start")) && selection.contains(QStringLiteral("end"))) {
         m_selStart = qBound(0.0, selection.value(QStringLiteral("start")).toDouble(), m_duration);
@@ -512,7 +508,6 @@ void Backend::saveNow() {
     object.insert(QStringLiteral("version"), 1);
     object.insert(QStringLiteral("speed"), m_player.speed());
     object.insert(QStringLiteral("volume"), m_player.volume());
-    object.insert(QStringLiteral("cursor"), m_cursor);
     if (m_hasSelection) {
         QJsonObject selection;
         selection.insert(QStringLiteral("start"), m_selStart);

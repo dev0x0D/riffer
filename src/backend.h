@@ -15,10 +15,11 @@
 
 class FilePicker;
 
-// One audio file and its practice state: speed, cursor, loop selection and
-// named sections, all persisted to a sidecar file beside the audio. Owns the
-// decode pipeline and the playback engine, and is the single context
-// property QML talks to.
+// One audio file and its practice state: speed, volume, loop selection and
+// named sections, persisted to a sidecar beside the audio. The cursor is a
+// per-session thing and is not persisted, so a track always opens at its
+// start. Owns the decode pipeline and the playback engine, and is the single
+// context property QML talks to.
 class Backend : public QObject {
     Q_OBJECT
 

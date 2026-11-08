@@ -44,7 +44,7 @@ Rectangle {
                     { k: "Space", d: qsTr("Play from the loop start; stop keeps the spot as the next start") },
                     { k: "[  ]", d: qsTr("Slower / faster by 5%") },
                     { k: "{  }", d: qsTr("Slower / faster by 1%") },
-                    { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 75%, 50%, 25%") },
+                    { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 95%, 85%, 75% — the slider covers the rest") },
                     { k: "←  →", d: qsTr("Nudge the playhead by 2 s (Shift: 10 s)") },
                     { k: "I  O", d: qsTr("Set selection start / end at the playhead") },
                     { k: "M", d: qsTr("Mark a section: press at the start, then the end") },
@@ -84,7 +84,7 @@ Rectangle {
 
                 Label {
                     Layout.topMargin: 10
-                    text: qsTr("Click sets the play position; drag to loop a passage; everything loops by default.")
+                    text: qsTr("Click sets the play position; drag to loop a passage. The strip under the wave shows the whole track — click or drag it to move the view window.")
                     color: "#8a8a92"
                     font.pixelSize: 11
                     wrapMode: Text.WordWrap

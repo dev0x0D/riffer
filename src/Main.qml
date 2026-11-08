@@ -93,9 +93,9 @@ ApplicationWindow {
     Shortcut { sequence: "{"; enabled: !win.typing; onActivated: backend.nudgeSpeed(-0.01) }
     Shortcut { sequence: "}"; enabled: !win.typing; onActivated: backend.nudgeSpeed(0.01) }
     Shortcut { sequence: "1"; enabled: !win.typing; onActivated: backend.setSpeed(1.0) }
-    Shortcut { sequence: "2"; enabled: !win.typing; onActivated: backend.setSpeed(0.75) }
-    Shortcut { sequence: "3"; enabled: !win.typing; onActivated: backend.setSpeed(0.5) }
-    Shortcut { sequence: "4"; enabled: !win.typing; onActivated: backend.setSpeed(0.25) }
+    Shortcut { sequence: "2"; enabled: !win.typing; onActivated: backend.setSpeed(0.95) }
+    Shortcut { sequence: "3"; enabled: !win.typing; onActivated: backend.setSpeed(0.85) }
+    Shortcut { sequence: "4"; enabled: !win.typing; onActivated: backend.setSpeed(0.75) }
     Shortcut { sequence: "Left"; enabled: !win.typing; onActivated: backend.seekRelative(-2) }
     Shortcut { sequence: "Right"; enabled: !win.typing; onActivated: backend.seekRelative(2) }
     Shortcut { sequence: "Shift+Left"; enabled: !win.typing; onActivated: backend.seekRelative(-10) }
@@ -361,6 +361,20 @@ ApplicationWindow {
                 }
             }
 
+            // -------------------------------------- overview strip ---
+            OverviewBar {
+                id: overview
+                visible: backend.ready
+                Layout.fillWidth: true
+                Layout.preferredHeight: 44
+                track: backend
+                viewStart: win.viewStart
+                viewEnd: win.viewEnd
+                accent: theme.accent
+                // Click or drag pans the main view; zoom stays on the wave.
+                onViewMoveRequested: t => win.centerOn(t)
+            }
+
             // ---------------------------------------------------- sections  ---
             SectionsPanel {
                 id: sectionsPanel
@@ -468,7 +482,7 @@ ApplicationWindow {
                     Row {
                         spacing: 4
                         Repeater {
-                            model: [0.25, 0.5, 0.75, 1.0]
+                            model: [0.65, 0.75, 0.85, 0.95, 1.0]
                             delegate: Button {
                                 flat: true
                                 font.pixelSize: 11

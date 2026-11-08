@@ -13,6 +13,7 @@
 #include <cstdio>
 
 #include "backend.h"
+#include "overviewbar.h"
 #include "theme.h"
 #include "translator.h"
 #include "waveformitem.h"
@@ -96,6 +97,7 @@ int main(int argc, char *argv[]) {
 
     QQuickStyle::setStyle("Material");
     qmlRegisterType<WaveformView>("Riffer", 1, 0, "WaveformView");
+    qmlRegisterType<OverviewBar>("Riffer", 1, 0, "OverviewBar");
 
     // Installed before anything is translated, and every qsTr() binding is
     // re-evaluated when the Omarchy language changes.

@@ -12,8 +12,8 @@ see the whole track, and loop passages until they sit under your fingers.
 - Opens MP3 and WAV (and anything else ffmpeg reads); can be the default
   application for both — run `bin/associate` once after installing.
 - Changes playback speed from 20% to 150% with the pitch untouched:
-  quick keys (`[` `]` for ±5%, `{` `}` for ±1%), presets (25/50/75/100) and
-  a fine slider.
+  quick keys (`[` `]` for ±5%, `{` `}` for ±1%), presets (65/75/85/95/100)
+  and a fine slider.
 - Shows the whole track as a waveform; zoom with `Ctrl+wheel`, `+`/`-`, `F`
   (fit selection) and `0` (fit track). Click sets the play position; drag
   selects a passage; drag either edge to fine-tune it.
@@ -22,8 +22,11 @@ see the whole track, and loop passages until they sit under your fingers.
   are and that spot becomes the next start.
 - Marks named sections (`M` at the start, `M` again at the end, `Shift+M`
   for the selection) with a panel (`Tab`) to jump, rename, play or delete.
-  Sections, speed, cursor and selection are saved to a
-  `<file>.riffer.json` sidecar beside the audio, atomically.
+  Sections, speed, volume and selection are saved to a
+  `<file>.riffer.json` sidecar beside the audio, atomically. The cursor
+  is not persisted: a track always opens at its start.
+- A strip under the waveform shows the whole track with a viewport
+  rectangle — click or drag it to move the zoomed view.
 
 ## Shortcuts
 
@@ -32,7 +35,7 @@ see the whole track, and loop passages until they sit under your fingers.
 | `Space` | Play from the loop start; stop keeps the spot as the next start |
 | `[` `]` | Slower / faster by 5% |
 | `{` `}` | Slower / faster by 1% |
-| `1` `2` `3` `4` | Speed presets 100%, 75%, 50%, 25% |
+| `1` `2` `3` `4` | Speed presets 100%, 95%, 85%, 75% |
 | `←` `→` | Nudge the playhead 2 s (`Shift`: 10 s) |
 | `I` / `O` | Selection start / end at the playhead |
 | `M` | Mark a section (press twice), `Shift+M` from selection |
