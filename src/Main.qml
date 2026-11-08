@@ -440,37 +440,6 @@ ApplicationWindow {
                         }
                     }
 
-                    // The loop context, at a glance; click to jump to its start.
-                    Rectangle {
-                        visible: backend.ready
-                        height: 26
-                        radius: 13
-                        width: loopLabel.implicitWidth + 30
-                        color: backend.playing ? "#26ffffff" : "#14ffffff"
-                        border.color: theme.accent
-                        border.width: 1
-                        Label {
-                            id: loopLabel
-                            anchors.centerIn: parent
-                            font.pixelSize: 11
-                            color: "#d8d8de"
-                            text: backend.loopMode === 2
-                                  ? qsTr("Loop: %1 – %2").arg(
-                                        backend.formatTime(backend.selectionStart, false)).arg(
-                                        backend.formatTime(backend.selectionEnd, false))
-                                  : backend.loopMode === 1
-                                    ? qsTr("Loop: from %1").arg(backend.formatTime(backend.cursor, false))
-                                    : qsTr("Loop: whole track")
-                        }
-                        MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                backend.setCursor(backend.loopStart)
-                                win.centerOn(backend.loopStart)
-                            }
-                        }
-                    }
                     Rectangle {
                         visible: backend.sectionPending
                         height: 26
@@ -505,8 +474,6 @@ ApplicationWindow {
                     }
                     RowLayout {
                         spacing: 4
-                        Button { flat: true; font.pixelSize: 11; enabled: backend.ready; text: "-5%"; onClicked: backend.nudgeSpeed(-0.05) }
-                        Button { flat: true; font.pixelSize: 11; enabled: backend.ready; text: "-1%"; onClicked: backend.nudgeSpeed(-0.01) }
                         Label {
                             text: Number(Math.round(backend.speed * 100)).toLocaleString(Qt.locale(), "f", 0) + "%"
                             color: theme.accent
@@ -525,8 +492,6 @@ ApplicationWindow {
                             Layout.preferredWidth: 170
                             onMoved: backend.setSpeed(value)
                         }
-                        Button { flat: true; font.pixelSize: 11; enabled: backend.ready; text: "+1%"; onClicked: backend.nudgeSpeed(0.01) }
-                        Button { flat: true; font.pixelSize: 11; enabled: backend.ready; text: "+5%"; onClicked: backend.nudgeSpeed(0.05) }
                     }
 
                     RowLayout {
