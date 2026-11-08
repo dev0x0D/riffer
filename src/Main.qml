@@ -7,9 +7,9 @@ import Riffer 1.0
 ApplicationWindow {
     id: win
     width: 1100
-    height: 720
+    height: 360
     minimumWidth: 860
-    minimumHeight: 560
+    minimumHeight: 360
     visible: true
     title: backend.ready || backend.loading ? qsTr("%1 — Riffer").arg(backend.fileName) : "Riffer"
     color: "#101014"
@@ -25,6 +25,15 @@ ApplicationWindow {
                               || activeFocusItem instanceof TextArea)
     property double viewStart: 0
     property double viewEnd: 1
+
+    // The sections panel needs real height; the compact window grows to
+    // give it room and shrinks back once it is closed.
+    function toggleSectionsPanel() {
+        const showing = !sectionsPanel.visible
+        sectionsPanel.visible = showing
+        height += showing ? sectionsPanel.Layout.preferredHeight
+                          : -sectionsPanel.Layout.preferredHeight
+    }
 
     function span() { return Math.max(0.001, viewEnd - viewStart) }
     function clampView() {
@@ -82,6 +91,7 @@ ApplicationWindow {
         }
         if (sectionsPanel.visible) {
             sectionsPanel.visible = false
+            height -= sectionsPanel.Layout.preferredHeight
             return
         }
         if (backend.sectionPending) {
@@ -134,7 +144,7 @@ ApplicationWindow {
     Shortcut { sequence: "+"; enabled: !win.typing; onActivated: win.zoomAt(waveBox.width / 2, 0.6) }
     Shortcut { sequence: "="; enabled: !win.typing; onActivated: win.zoomAt(waveBox.width / 2, 0.6) }
     Shortcut { sequence: "-"; enabled: !win.typing; onActivated: win.zoomAt(waveBox.width / 2, 1 / 0.6) }
-    Shortcut { sequence: "Tab"; enabled: !win.typing; onActivated: sectionsPanel.visible = !sectionsPanel.visible }
+    Shortcut { sequence: "Tab"; enabled: !win.typing; onActivated: toggleSectionsPanel() }
     Shortcut { sequence: "Esc"; enabled: true; onActivated: win.handleEsc() }
     Shortcut { sequence: "Ctrl+Z"; enabled: !win.typing; onActivated: backend.undo() }
     Shortcut { sequence: "Ctrl+Shift+Z"; enabled: !win.typing; onActivated: backend.redo() }
@@ -440,8 +450,8 @@ ApplicationWindow {
                         }
                     }
 
-                    ColumnLayout {
-                        spacing: 0
+                    RowLayout {
+                        spacing: 6
                         Label {
                             text: backend.formatTime(backend.playhead, true)
                             font.pixelSize: 18
@@ -450,8 +460,8 @@ ApplicationWindow {
                             font.family: "monospace"
                         }
                         Label {
-                            text: backend.formatTime(backend.duration, false)
-                            font.pixelSize: 11
+                            text: "/ " + backend.formatTime(backend.duration, false)
+                            font.pixelSize: 12
                             color: "#8a8a92"
                             font.family: "monospace"
                         }
