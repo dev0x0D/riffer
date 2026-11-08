@@ -42,6 +42,7 @@
   "No sections yet. Press M at the start and the end of a passage to mark one.": "Секций пока нет. Нажмите M в начале и в конце фрагмента, чтобы отметить.",
   "Loop and play this section": "Цикл и воспроизведение секции",
   "Delete this section": "Удалить секцию",
+  "Rename this section": "Переименовать секцию",
   "Section is too short; press M again further apart.": "Секция слишком короткая; нажмите M ещё раз с большим интервалом.",
   "Could not decode %1: %2": "Не удалось декодировать %1: %2",
   "ffmpeg failed: %1": "ошибка ffmpeg: %1",

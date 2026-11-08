@@ -39,7 +39,7 @@ ApplicationWindow {
         width: 500
         height: 420
         visible: false
-        color: "#101014"
+        color: "#17171d"
         Material.theme: Material.Dark
         Material.accent: theme.accent
         Material.roundedScale: win.materialScale
@@ -47,7 +47,6 @@ ApplicationWindow {
 
         SectionsPanel {
             anchors.fill: parent
-            anchors.margins: 10
             onCloseRequested: sectionsWindow.close()
         }
     }
@@ -296,6 +295,11 @@ ApplicationWindow {
                             return Qt.ArrowCursor
                         if (mode === 2 || mode === 3)
                             return Qt.SizeHorCursor
+                        // A section chip in the lane under the ruler: clicking
+                        // it activates the section, so point at it.
+                        if (mouseY > 29 && mouseY < 45
+                                && backend.sectionAtTime(win.timeAt(mouseX)) >= 0)
+                            return Qt.PointingHandCursor
                         if (backend.hasSelection) {
                             const xs = (backend.selectionStart - win.viewStart) / win.span() * width
                             const xe = (backend.selectionEnd - win.viewStart) / win.span() * width
@@ -355,8 +359,20 @@ ApplicationWindow {
                         }
                     }
                     onReleased: mouse => {
-                        if (mode === 1 && !moved)
+                        if (mode === 1 && !moved) {
+                            // The chip lane (y 29..45 mirrors the lane drawn by
+                            // WaveformView): clicking inside a section chip
+                            // activates it instead of placing the cursor.
+                            if (mouse.y > 29 && mouse.y < 45) {
+                                const section = backend.sectionAtTime(win.timeAt(mouse.x))
+                                if (section >= 0) {
+                                    backend.playSection(section)
+                                    mode = 0
+                                    return
+                                }
+                            }
                             backend.setCursor(win.timeAt(mouse.x))
+                        }
                         mode = 0
                     }
                     onDoubleClicked: backend.clearSelection()

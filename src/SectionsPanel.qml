@@ -2,13 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-// The section list: click a row to jump, double-click the name to rename,
-// ▶ to loop and play a section, ✕ to delete (Ctrl+Z undoes).
+// The section list: click a row to play the section (the window closes,
+// the boundaries highlight and the section loops), ✎ to rename, ✕ to
+// delete (Ctrl+Z undoes).
 Rectangle {
     id: panel
-    color: "#131318"
-    border.color: "#14ffffff"
-    border.width: 1
+    color: "transparent"
 
     signal closeRequested()
 
@@ -20,7 +19,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.leftMargin: 14
             Layout.rightMargin: 8
-            Layout.topMargin: 6
+            Layout.topMargin: 10
             spacing: 8
             Label {
                 text: qsTr("Sections")
@@ -62,7 +61,11 @@ Rectangle {
                     id: rowArea
                     anchors.fill: parent
                     hoverEnabled: true
-                    onClicked: backend.jumpToSection(index)
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        backend.playSection(index) // highlights boundaries, loops, plays
+                        panel.closeRequested()
+                    }
                 }
 
                 RowLayout {
@@ -79,6 +82,7 @@ Rectangle {
                             Layout.fillWidth: true
                             text: modelData.name
                             font.pixelSize: 13
+                            color: "#e8e8ee"
                             onAccepted: {
                                 backend.renameSection(index, text)
                                 editing = false
@@ -93,11 +97,6 @@ Rectangle {
                             color: "#e8e8ee"
                             elide: Text.ElideRight
                             Layout.fillWidth: true
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: backend.jumpToSection(index)
-                                onDoubleClicked: editing = true
-                            }
                         }
                         Label {
                             text: backend.formatTime(modelData.start, false) + " – "
@@ -107,17 +106,16 @@ Rectangle {
                         }
                     }
 
-                    Button {
-                        flat: true
-                        text: "▶"
+                    ToolButton {
+                        visible: rowArea.containsMouse
+                        text: "✎"
                         font.pixelSize: 12
                         ToolTip.visible: hovered
                         ToolTip.delay: 600
-                        ToolTip.text: qsTr("Loop and play this section")
-                        onClicked: backend.playSection(index)
+                        ToolTip.text: qsTr("Rename this section")
+                        onClicked: editing = true
                     }
-                    Button {
-                        flat: true
+                    ToolButton {
                         text: "✕"
                         font.pixelSize: 12
                         ToolTip.visible: hovered
