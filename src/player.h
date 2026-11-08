@@ -2,10 +2,13 @@
 
 #include <QAudioFormat>
 #include <QObject>
+#include <QTimer>
+#include <vector>
 
 #include "clock.h"
 
 class QAudioSink;
+class QIODevice;
 namespace soundtouch {
 class SoundTouch;
 }
@@ -13,8 +16,10 @@ class SoundTouch;
 // The practice engine: plays an in-memory stereo f32 buffer through
 // SoundTouch (speed changes keep the pitch) into QAudioSink, looping the
 // active range gaplessly — the wrap happens inside the stretch pipeline, so
-// there is no seam to hear. All timing math lives in PlayClock so it stays
-// testable without an audio device.
+// there is no seam to hear. QAudioSink runs in push mode with a small feeder
+// timer: Qt 6.12's ffmpeg backend never pulls from a custom QIODevice (the
+// device stays silent), while timed writes are served reliably. All timing
+// math lives in PlayClock so it stays testable without an audio device.
 class Player : public QObject {
     Q_OBJECT
 
@@ -36,11 +41,11 @@ public:
 
 public slots:
     void setLoop(double startSec, double endSec);
-    void setSpeed(double speed);  // 0.2 .. 1.5, pitch preserved
+    void setSpeed(double speed);   // 0.2 .. 1.5, pitch preserved
     void setVolume(double volume); // 0 .. 1
-    void play();                  // always restarts from the loop start
+    void play();                   // always restarts from the loop start
     void stop();
-    void seek(double sec);        // live jump while playing
+    void seek(double sec);         // live jump while playing
 
 signals:
     void playingChanged();
@@ -49,28 +54,30 @@ signals:
     void errorOccurred(const QString &message);
 
 private:
-    class Stream; // QIODevice pulling from SoundTouch for QAudioSink
-    friend class Stream;
-
     qint64 frameOf(double sec) const {
         return qBound<qint64>(0, qRound64(sec * kSampleRate), m_frameCount);
     }
     qint64 latencyOutFrames() const;
     void resetPipeline(qint64 startFrame);
     void fill(qint64 framesWanted);
+    bool startSink();
+    void pump(); // feeder tick: top the sink up from SoundTouch
 
     const float *m_frames = nullptr;
     qint64 m_frameCount = 0;
     qint64 m_loopStartF = 0;
     qint64 m_loopEndF = 0;
     qint64 m_nextInput = 0;
-    qint64 m_outFrames = 0; // output frames handed to the device so far
+    qint64 m_outFrames = 0; // output frames handed to the sink so far
     double m_speed = 1.0;
     double m_volume = 1.0;
     bool m_playing = false;
     soundtouch::SoundTouch *m_st = nullptr;
     QAudioSink *m_sink = nullptr;
-    Stream *m_stream = nullptr;
+    QIODevice *m_sinkDevice = nullptr; // the sink's push-mode device
+    QTimer m_feeder;
+    std::vector<float> m_pending;  // samples the sink has not accepted yet
+    std::vector<float> m_scratch;  // receive buffer for one feeder pass
     QAudioFormat m_format;
     PlayClock m_clock;
 };
