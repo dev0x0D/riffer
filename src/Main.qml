@@ -99,9 +99,9 @@ ApplicationWindow {
     Shortcut { sequence: "{"; enabled: !win.typing; onActivated: backend.nudgeSpeed(-0.01) }
     Shortcut { sequence: "}"; enabled: !win.typing; onActivated: backend.nudgeSpeed(0.01) }
     Shortcut { sequence: "1"; enabled: !win.typing; onActivated: backend.setSpeed(1.0) }
-    Shortcut { sequence: "2"; enabled: !win.typing; onActivated: backend.setSpeed(0.95) }
-    Shortcut { sequence: "3"; enabled: !win.typing; onActivated: backend.setSpeed(0.85) }
-    Shortcut { sequence: "4"; enabled: !win.typing; onActivated: backend.setSpeed(0.75) }
+    Shortcut { sequence: "2"; enabled: !win.typing; onActivated: backend.setSpeed(0.9) }
+    Shortcut { sequence: "3"; enabled: !win.typing; onActivated: backend.setSpeed(0.8) }
+    Shortcut { sequence: "4"; enabled: !win.typing; onActivated: backend.setSpeed(0.7) }
     Shortcut { sequence: "Left"; enabled: !win.typing; onActivated: backend.seekRelative(-0.5) }
     Shortcut { sequence: "Right"; enabled: !win.typing; onActivated: backend.seekRelative(0.5) }
     Shortcut { sequence: "Shift+Left"; enabled: !win.typing; onActivated: backend.seekRelative(-5) }
@@ -478,7 +478,7 @@ ApplicationWindow {
                     Row {
                         spacing: 4
                         Repeater {
-                            model: [0.65, 0.75, 0.85, 0.95, 1.0]
+                            model: [0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
                             delegate: Button {
                                 flat: true
                                 font.pixelSize: 11

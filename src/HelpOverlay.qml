@@ -44,7 +44,7 @@ Rectangle {
                     { k: "Space", d: qsTr("Play from the start cursor; stop keeps the playhead where it stopped") },
                     { k: "[  ]", d: qsTr("Slower / faster by 5%") },
                     { k: "{  }", d: qsTr("Slower / faster by 1%") },
-                    { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 95%, 85%, 75% — the slider covers the rest") },
+                    { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 90%, 80%, 70% — the slider covers the rest") },
                     { k: "←  →", d: qsTr("Nudge the start cursor by 0.5 s (Shift: 5 s)") },
                     { k: "↑  ↓", d: qsTr("Volume up / down by 5%") },
                     { k: "I  O", d: qsTr("Set selection start / end at the playhead") },
