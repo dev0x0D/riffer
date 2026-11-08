@@ -1,76 +1,76 @@
 # riffer
 
-A native Linux practice player for MP3 and WAV files, in the spirit of
-[Transcribe!](https://www.seventhstring.com/xscribe/overview.html) but with
-just what you need to learn a piece: slow it down without changing the pitch,
-see the whole track, and loop passages until they sit under your fingers.
+Нативный плеер для Linux, чтобы разучивать музыку на слух: замедляет MP3 и
+WAV без изменения тональности, показывает трек целиком и зацикливает
+отрывки, пока те не лягут под пальцы.
 
 ![riffer](docs/screenshot.png)
 
-## What it does
+## Что умеет
 
-- Opens MP3 and WAV (and anything else ffmpeg reads); can be the default
-  application for both — run `bin/associate` once after installing.
-- Changes playback speed from 20% to 150% with the pitch untouched:
-  quick keys (`[` `]` for ±5%, `{` `}` for ±1%), presets (65/75/85/95/100)
-  and a fine slider.
-- Shows the whole track as a waveform; zoom with `Ctrl+wheel`, `+`/`-`, `F`
-  (fit selection) and `0` (fit track). Click sets the play position; drag
-  selects a passage; drag either edge to fine-tune it.
-- Loops by default: the whole track, from the start cursor, or the
-  selection — whichever is furthest along. Clicking the wave places the
-  start cursor. `Space` plays from it; `Space` again stops and leaves the
-  playhead standing there as a bookmark, so you can place the start
-  cursor at (or near) where you stopped and pick up from there.
-- Marks named sections (`M` at the start, `M` again at the end, `Shift+M`
-  for the selection) with a panel (`Tab`) to jump, rename, play or delete.
-  Sections, speed, volume and selection are saved to a
-  `<file>.riffer.json` sidecar beside the audio, atomically. The cursor
-  is not persisted: a track always opens at its start.
-- A strip under the waveform shows the whole track with a viewport
-  rectangle — click or drag it to move the zoomed view.
+- Открывает MP3 и WAV (и всё, что читает ffmpeg); может стать приложением
+  по умолчанию для обоих форматов — один раз запустите `bin/associate`
+  после установки.
+- Меняет скорость от 20% до 150% не трогая тональность: клавиши
+  (`[` `]` — ±5%, `{` `}` — ±1%), пресеты (65/75/85/95/100) и точный
+  ползунок.
+- Показывает весь трек волной; зум — `Ctrl+колесо`, `+`/`-`, `F`
+  (к выделению) и `0` (весь трек). Клик ставит стартовый курсор;
+  протяжка выделяет отрывок; за края выделение можно подвинуть.
+- Цикл по умолчанию: весь трек, от стартового курсора или выделение —
+  что из них дальше. Клик по волне ставит стартовый курсор. `Space`
+  играет от него; повторный `Space` останавливает, и каретка остаётся
+  стоять на месте остановки — ориентир, чтобы поставить стартовый курсор
+  туда или рядом и продолжить с этой точки.
+- Отмечает именованные секции (`M` в начале, `M` ещё раз в конце,
+  `Shift+M` по выделению) с панелью (`Tab`): переход, переименование,
+  проигрывание, удаление. Секции, скорость, громкость и выделение
+  сохраняются в `<файл>.riffer.json` рядом с аудио, атомарно. Курсор
+  не сохраняется: трек всегда открывается с начала.
+- Полоса под волной показывает весь трек с рамкой окна просмотра —
+  клик или протяжка по ней двигают зум, не меняя масштаб.
 
-## Shortcuts
+## Горячие клавиши
 
-| Key | Action |
+| Клавиша | Действие |
 | --- | --- |
-| `Space` | Play from the start cursor; stop keeps the playhead where it stopped |
-| `[` `]` | Slower / faster by 5% |
-| `{` `}` | Slower / faster by 1% |
-| `1` `2` `3` `4` | Speed presets 100%, 95%, 85%, 75% |
-| `←` `→` | Nudge the start cursor 0.5 s (`Shift`: 5 s) |
-| `↑` `↓` | Volume ±5% |
-| `I` / `O` | Selection start / end at the playhead |
-| `M` | Mark a section (press twice), `Shift+M` from selection |
-| `Tab` | Sections panel |
-| `F` / `0` | Zoom to selection / whole track |
-| `+` / `-`, `Ctrl+wheel` | Zoom |
-| `Home` / `End` | Jump to start / end |
-| `Ctrl+Z` / `Ctrl+Shift+Z` | Undo / redo a section edit |
-| `Ctrl+O` | Open a file |
-| `Esc` | Clear selection, close panels and dialogs |
-| `?` | All shortcuts |
-| `Q` | Quit |
+| `Space` | Играть от стартового курсора; стоп оставляет каретку на месте остановки |
+| `[` `]` | Медленнее / быстрее на 5% |
+| `{` `}` | Медленнее / быстрее на 1% |
+| `1` `2` `3` `4` | Пресеты скорости 100%, 95%, 85%, 75% |
+| `←` `→` | Сдвинуть стартовый курсор на 0,5 с (`Shift`: 5 с) |
+| `↑` `↓` | Громкость ±5% |
+| `I` / `O` | Начало / конец выделения по каретке |
+| `M` | Отметить секцию (два нажатия), `Shift+M` по выделению |
+| `Tab` | Панель секций |
+| `F` / `0` | Зум к выделению / весь трек |
+| `+` / `-`, `Ctrl+колесо` | Зум |
+| `Home` / `End` | В начало / в конец |
+| `Ctrl+Z` / `Ctrl+Shift+Z` | Отменить / повторить правку секций |
+| `Ctrl+O` | Открыть файл |
+| `Esc` | Сбросить выделение, закрыть панели и диалоги |
+| `?` | Все горячие клавиши |
+| `Q` | Выход |
 
-## How it is built
+## Как устроено
 
-C++ and Qt Quick, following the Omarchy app conventions (theme accent and
-rounding live, xdg-desktop-portal file dialogs, keyboard-first). Decoding
-goes through the `ffmpeg` command line; playback is an in-memory buffer
-pumped through SoundTouch into `QAudioSink`, which makes the loops seamless
-and the speed changes instant.
+C++ и Qt Quick, по конвенциям приложений Omarchy (акцент темы и скругления
+подхватываются на лету, файловые диалоги через xdg-desktop-portal,
+управление с клавиатуры). Декодирование идёт через командную строку
+`ffmpeg`; воспроизведение — буфер в памяти, прокачиваемый через SoundTouch
+в `QAudioSink`, поэтому циклы бесшовные, а скорость меняется мгновенно.
 
-    ./bin/build     # qmake6 + make into build/riffer
-    ./bin/test      # offscreen Qt Test run
+    ./bin/build     # qmake6 + make, бинарь в build/riffer
+    ./bin/test      # прогон Qt Test без окна
     ./bin/install   # makepkg + pacman -U
-    ./bin/associate # make riffer the default for MP3/WAV
+    ./bin/associate # назначить riffer основным для MP3/WAV
 
-There is a small headless interface for agents and scripts:
+Есть небольшой headless-интерфейс для агентов и скриптов:
 
-    riffer sections <file>            # table of saved sections
-    riffer sections <file> --json
+    riffer sections <файл>            # таблица сохранённых секций
+    riffer sections <файл> --json
 
-## License
+## Лицензия
 
-MIT. The theme watcher, translator and portal file picker are adapted from
-Omacut and Monologue (MIT, David Heinemeier Hansson).
+MIT. Наблюдатель темы, переводчик и файловый пикер через портал
+адаптированы из Omacut и Monologue (MIT, David Heinemeier Hansson).

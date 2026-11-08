@@ -215,7 +215,7 @@ void WaveformView::paint(QPainter *painter) {
         const double se = m_backend->selectionEnd();
         const qreal x1 = xOf(ss);
         const qreal x2 = xOf(se);
-        // Everything outside the loop dims, Transcribe!-style, so the loop
+        // Everything outside the loop dims, so the loop
         // reads at a glance.
         painter->setPen(Qt::NoPen);
         painter->setBrush(QColor(0, 0, 0, 90));

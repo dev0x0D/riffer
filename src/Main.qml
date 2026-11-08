@@ -474,7 +474,7 @@ ApplicationWindow {
 
                     Item { Layout.fillWidth: true }
 
-                    // Speed presets and fine control, Transcribe!-style.
+                    // Speed presets and fine control.
                     Row {
                         spacing: 4
                         Repeater {
