@@ -74,7 +74,7 @@ Backend::Backend(Decoder *decoder, FilePicker *picker, QObject *parent) : QObjec
 }
 
 Backend::~Backend() {
-    if (m_dirty && !m_filePath.isEmpty())
+    if (m_persist && m_dirty && !m_filePath.isEmpty())
         saveNow();
 }
 
@@ -95,6 +95,8 @@ double Backend::selectionStart() const { return m_selStart; }
 double Backend::selectionEnd() const { return m_selEnd; }
 double Backend::speed() const { return m_player.speed(); }
 double Backend::volume() const { return m_player.volume(); }
+
+bool Backend::persist() const { return m_persist; }
 bool Backend::sectionPending() const { return m_sectionPending; }
 double Backend::sectionPendingAt() const { return m_sectionPendingAt; }
 bool Backend::canUndo() const { return !m_undo.empty(); }
@@ -497,11 +499,31 @@ void Backend::loadSidecarState() {
         emit selectionChanged();
     }
     setSectionsFromJson(saved.value(QStringLiteral("sections")).toArray());
+    // Persistence is opt-in, but a sidecar written by an earlier opt-in
+    // session keeps this track saving until it is switched off again.
+    m_persist = saved.value(QStringLiteral("autosave")).toBool();
+    emit persistChanged();
 }
 
 void Backend::scheduleSave() {
+    if (!m_persist)
+        return; // nothing is written unless this track opted in
     m_dirty = true;
     m_saveTimer.start();
+}
+
+void Backend::setPersist(bool persist) {
+    if (m_persist == persist)
+        return;
+    m_persist = persist;
+    emit persistChanged();
+    if (persist) {
+        m_dirty = true;
+        saveNow(); // write the sidecar immediately, no debounce
+    } else if (!m_filePath.isEmpty()) {
+        QFile::remove(sidecarPath(m_filePath)); // opting out declutters
+        m_dirty = false;
+    }
 }
 
 void Backend::saveNow() {
@@ -509,6 +531,7 @@ void Backend::saveNow() {
         return;
     QJsonObject object;
     object.insert(QStringLiteral("version"), 1);
+    object.insert(QStringLiteral("autosave"), true);
     object.insert(QStringLiteral("speed"), m_player.speed());
     object.insert(QStringLiteral("volume"), m_player.volume());
     if (m_hasSelection) {

@@ -165,7 +165,8 @@ private slots:
             QCOMPARE(backend.sectionAtTime(0.2), 0);
             QCOMPARE(backend.sectionAtTime(0.95), -1);
 
-            // The sidecar is written beside the file after the debounce.
+            // Persistence is opt-in; enabling it writes the sidecar at once.
+            backend.setPersist(true);
             QTRY_VERIFY_WITH_TIMEOUT(QFile::exists(Backend::sidecarPath(track)), 4000);
         }
 
@@ -201,6 +202,12 @@ private slots:
             QCOMPARE(backend.sections().size(), 1);
             backend.deleteSection(0);
             QVERIFY(!backend.canRedo()); // a new edit drops the redo stack
+
+            // The opt-in flag rode along in the sidecar, and opting out
+            // removes the file again.
+            QCOMPARE(backend.persist(), true);
+            backend.setPersist(false);
+            QVERIFY(!QFile::exists(Backend::sidecarPath(track)));
         }
     }
 

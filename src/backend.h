@@ -47,6 +47,9 @@ class Backend : public QObject {
     Q_PROPERTY(double sectionPendingAt READ sectionPendingAt NOTIFY sectionPendingChanged)
     Q_PROPERTY(bool canUndo READ canUndo NOTIFY undoChanged)
     Q_PROPERTY(bool canRedo READ canRedo NOTIFY undoChanged)
+    // Opt-in sidecar persistence: off by default, so a track does not grow
+    // a .riffer.json unless it was asked for on this track.
+    Q_PROPERTY(bool persist READ persist WRITE setPersist NOTIFY persistChanged)
 
 public:
     struct Section {
@@ -83,6 +86,7 @@ public:
     double sectionPendingAt() const;
     bool canUndo() const;
     bool canRedo() const;
+    bool persist() const;
 
 public slots:
     void setCursor(double sec);
@@ -95,6 +99,7 @@ public slots:
     Q_INVOKABLE void nudgeSpeed(double delta);
     Q_INVOKABLE void nudgeVolume(double delta);  // arrow up/down, ±delta
     Q_INVOKABLE void seekRelative(double delta); // arrows; moves the start cursor while stopped
+    void setPersist(bool persist);
     Q_INVOKABLE void select(double start, double end);
     Q_INVOKABLE void clearSelection();
     Q_INVOKABLE void beginSection();             // M: start, M again: end
@@ -135,6 +140,7 @@ signals:
     void sectionsChanged();
     void sectionPendingChanged();
     void undoChanged();
+    void persistChanged();
     void nameSectionRequested(double start, double end, const QString &suggestion);
     void centerRequested(double sec); // QML scrolls the waveform view
 
@@ -177,4 +183,5 @@ private:
     QTimer m_saveTimer; // debounced sidecar autosave
     QTimer m_tick;      // playhead refresh while playing
     bool m_dirty = false;
+    bool m_persist = false; // opt-in sidecar writing, off until asked for
 };

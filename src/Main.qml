@@ -204,6 +204,36 @@ ApplicationWindow {
                     }
                 }
                 Item { Layout.fillWidth: true }
+                // Opt-in sidecar persistence: off by default, so tracks do
+                // not sprout .riffer.json files unless asked for.
+                Rectangle {
+                    width: persistLabel.implicitWidth + 24
+                    height: 24
+                    radius: 12
+                    visible: backend.ready
+                    color: backend.persist ? "#2a2a33" : "transparent"
+                    border.color: backend.persist ? theme.accent : "#3d3d47"
+                    border.width: 1
+                    Label {
+                        id: persistLabel
+                        anchors.centerIn: parent
+                        text: qsTr("Autosave")
+                        color: backend.persist ? theme.accent : "#8a8a92"
+                        font.pixelSize: 11
+                    }
+                    MouseArea {
+                        id: persistMouse
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: backend.setPersist(!backend.persist)
+                        ToolTip.visible: containsMouse
+                        ToolTip.delay: 600
+                        ToolTip.text: backend.persist
+                                      ? qsTr("Saving speed, volume and sections beside the audio; turning this off deletes the file")
+                                      : qsTr("Keep speed, volume and sections in a .riffer.json beside the audio")
+                    }
+                }
                 // Volume in the corner: always within reach, and visibly
                 // separate from the speed slider in the transport bar.
                 RowLayout {
