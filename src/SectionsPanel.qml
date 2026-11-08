@@ -10,6 +10,8 @@ Rectangle {
     border.color: "#14ffffff"
     border.width: 1
 
+    signal closeRequested()
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
@@ -35,7 +37,7 @@ Rectangle {
                 Layout.fillWidth: true
             }
             Item { Layout.fillWidth: true }
-            ToolButton { text: "✕"; onClicked: panel.visible = false }
+            ToolButton { text: "✕"; onClicked: panel.closeRequested() }
         }
 
         ListView {
@@ -52,6 +54,16 @@ Rectangle {
                 width: list.width
                 height: 46
                 property bool editing: false
+                // A plain Rectangle defaults to white: keep the rows on the
+                // dark panel, with a subtle hover so the click target reads.
+                color: rowArea.containsMouse ? "#1b1b23" : "transparent"
+
+                MouseArea {
+                    id: rowArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: backend.jumpToSection(index)
+                }
 
                 RowLayout {
                     anchors.fill: parent

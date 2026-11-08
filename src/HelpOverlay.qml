@@ -50,7 +50,7 @@ Rectangle {
                     { k: "I  O", d: qsTr("Set selection start / end at the playhead") },
                     { k: "M", d: qsTr("Mark a section: press at the start, then the end") },
                     { k: "Shift+M", d: qsTr("Make a section from the selection") },
-                    { k: "Tab", d: qsTr("Show or hide the sections panel") },
+                    { k: "Tab", d: qsTr("Show or hide the sections window") },
                     { k: "F / 0", d: qsTr("Zoom to selection / whole track") },
                     { k: "+  −", d: qsTr("Zoom in / out") },
                     { k: "Ctrl+wheel", d: qsTr("Zoom at the pointer") },

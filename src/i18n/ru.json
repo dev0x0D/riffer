@@ -23,7 +23,7 @@
   "Set selection start / end at the playhead": "Начало / конец выделения на текущей позиции",
   "Mark a section: press at the start, then the end": "Отметить секцию: нажмите в начале, затем в конце",
   "Make a section from the selection": "Сделать секцию из выделения",
-  "Show or hide the sections panel": "Показать или скрыть панель секций",
+  "Show or hide the sections window": "Показать или скрыть окно секций",
   "Zoom to selection / whole track": "Масштаб к выделению / всему треку",
   "Zoom in / out": "Приблизить / отдалить",
   "Zoom at the pointer": "Масштаб к указателю",

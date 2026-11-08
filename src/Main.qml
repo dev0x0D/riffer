@@ -16,7 +16,7 @@ ApplicationWindow {
 
     Material.theme: Material.Dark
     Material.accent: theme.accent
-    Material.roundedScale: theme.radius
+    Material.roundedScale: materialScale
 
     property bool helpVisible: false
     // Keys that type into fields must not fire application shortcuts.
@@ -25,14 +25,31 @@ ApplicationWindow {
                               || activeFocusItem instanceof TextArea)
     property double viewStart: 0
     property double viewEnd: 1
+    // Material.roundedScale wants an enum, not pixels; map the theme's px.
+    readonly property int materialScale: theme.radius <= 4 ? Material.Tiny
+                                       : theme.radius <= 8 ? Material.Small
+                                       : theme.radius <= 14 ? Material.Medium
+                                       : Material.Large
 
-    // The sections panel needs real height; the compact window grows to
-    // give it room and shrinks back once it is closed.
-    function toggleSectionsPanel() {
-        const showing = !sectionsPanel.visible
-        sectionsPanel.visible = showing
-        height += showing ? sectionsPanel.Layout.preferredHeight
-                          : -sectionsPanel.Layout.preferredHeight
+    // The sections list lives in its own window that opens over the compact
+    // main window; Tab shows/raises it, Esc or ✕ closes it.
+    Window {
+        id: sectionsWindow
+        title: qsTr("Sections")
+        width: 500
+        height: 420
+        visible: false
+        color: "#101014"
+        Material.theme: Material.Dark
+        Material.accent: theme.accent
+        Material.roundedScale: win.materialScale
+        onVisibleChanged: if (visible) requestActivate()
+
+        SectionsPanel {
+            anchors.fill: parent
+            anchors.margins: 10
+            onCloseRequested: sectionsWindow.close()
+        }
     }
 
     function span() { return Math.max(0.001, viewEnd - viewStart) }
@@ -89,9 +106,8 @@ ApplicationWindow {
             helpVisible = false
             return
         }
-        if (sectionsPanel.visible) {
-            sectionsPanel.visible = false
-            height -= sectionsPanel.Layout.preferredHeight
+        if (sectionsWindow.visible) {
+            sectionsWindow.close()
             return
         }
         if (backend.sectionPending) {
@@ -144,7 +160,7 @@ ApplicationWindow {
     Shortcut { sequence: "+"; enabled: !win.typing; onActivated: win.zoomAt(waveBox.width / 2, 0.6) }
     Shortcut { sequence: "="; enabled: !win.typing; onActivated: win.zoomAt(waveBox.width / 2, 0.6) }
     Shortcut { sequence: "-"; enabled: !win.typing; onActivated: win.zoomAt(waveBox.width / 2, 1 / 0.6) }
-    Shortcut { sequence: "Tab"; enabled: !win.typing; onActivated: toggleSectionsPanel() }
+    Shortcut { sequence: "Tab"; enabled: !win.typing; onActivated: sectionsWindow.visible = !sectionsWindow.visible }
     Shortcut { sequence: "Esc"; enabled: true; onActivated: win.handleEsc() }
     Shortcut { sequence: "Ctrl+Z"; enabled: !win.typing; onActivated: backend.undo() }
     Shortcut { sequence: "Ctrl+Shift+Z"; enabled: !win.typing; onActivated: backend.redo() }
@@ -410,14 +426,6 @@ ApplicationWindow {
                     win.viewEnd = start + sp
                     win.clampView()
                 }
-            }
-
-            // ---------------------------------------------------- sections  ---
-            SectionsPanel {
-                id: sectionsPanel
-                visible: false
-                Layout.fillWidth: true
-                Layout.preferredHeight: 170
             }
 
             // --------------------------------------------------- transport  ---
