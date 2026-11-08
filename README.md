@@ -6,6 +6,8 @@ WAV без изменения тональности, показывает тр�
 
 ![riffer](docs/screenshot.png?v=4)
 
+[![Лицензия: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
 ## Что умеет
 
 - Открывает MP3 и WAV (и всё, что читает ffmpeg); может стать приложением
@@ -72,5 +74,4 @@ C++ и Qt Quick, по конвенциям приложений Omarchy (акц�
 
 ## Лицензия
 
-MIT. Наблюдатель темы, переводчик и файловый пикер через портал
-адаптированы из Omacut и Monologue (MIT, David Heinemeier Hansson).
+[MIT](LICENSE)
