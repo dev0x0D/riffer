@@ -68,12 +68,22 @@ double OverviewBar::timeAt(qreal x) const {
 
 void OverviewBar::mousePressEvent(QMouseEvent *event) {
     m_panning = true;
-    emit viewMoveRequested(timeAt(event->position().x()));
+    const double t = timeAt(event->position().x());
+    const double span = m_viewEnd - m_viewStart;
+    if (t >= m_viewStart && t <= m_viewEnd) {
+        // Grab the window and drag it 1:1, keeping the zoom.
+        m_grabOffset = t - m_viewStart;
+    } else {
+        // Clicking outside jumps the window so the pointer is its center,
+        // then keeps dragging it by the middle. The zoom stays untouched.
+        m_grabOffset = span / 2;
+        emit viewPanRequested(t - m_grabOffset);
+    }
 }
 
 void OverviewBar::mouseMoveEvent(QMouseEvent *event) {
     if (m_panning)
-        emit viewMoveRequested(timeAt(event->position().x()));
+        emit viewPanRequested(timeAt(event->position().x()) - m_grabOffset);
 }
 
 void OverviewBar::mouseReleaseEvent(QMouseEvent *) {

@@ -17,9 +17,11 @@ see the whole track, and loop passages until they sit under your fingers.
 - Shows the whole track as a waveform; zoom with `Ctrl+wheel`, `+`/`-`, `F`
   (fit selection) and `0` (fit track). Click sets the play position; drag
   selects a passage; drag either edge to fine-tune it.
-- Loops by default: the whole track, from the cursor, or the selection —
-  whichever is furthest along. `Space` plays; `Space` again stops where you
-  are and that spot becomes the next start.
+- Loops by default: the whole track, from the start cursor, or the
+  selection — whichever is furthest along. Clicking the wave places the
+  start cursor. `Space` plays from it; `Space` again stops and leaves the
+  playhead standing there as a bookmark, so you can place the start
+  cursor at (or near) where you stopped and pick up from there.
 - Marks named sections (`M` at the start, `M` again at the end, `Shift+M`
   for the selection) with a panel (`Tab`) to jump, rename, play or delete.
   Sections, speed, volume and selection are saved to a
@@ -32,11 +34,11 @@ see the whole track, and loop passages until they sit under your fingers.
 
 | Key | Action |
 | --- | --- |
-| `Space` | Play from the loop start; stop keeps the spot as the next start |
+| `Space` | Play from the start cursor; stop keeps the playhead where it stopped |
 | `[` `]` | Slower / faster by 5% |
 | `{` `}` | Slower / faster by 1% |
 | `1` `2` `3` `4` | Speed presets 100%, 95%, 85%, 75% |
-| `←` `→` | Nudge the playhead 2 s (`Shift`: 10 s) |
+| `←` `→` | Nudge the position 2 s (`Shift`: 10 s); while stopped it moves the start cursor |
 | `I` / `O` | Selection start / end at the playhead |
 | `M` | Mark a section (press twice), `Shift+M` from selection |
 | `Tab` | Sections panel |

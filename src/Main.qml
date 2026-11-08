@@ -104,17 +104,13 @@ ApplicationWindow {
     Shortcut { sequence: "End"; enabled: !win.typing; onActivated: { backend.setCursor(Math.max(0, backend.duration - 0.05)); win.centerOn(backend.cursor) } }
     Shortcut {
         sequence: "I"; enabled: !win.typing
-        onActivated: {
-            const t = backend.playing ? backend.playhead : backend.cursor
-            backend.select(t, backend.hasSelection ? backend.selectionEnd : backend.duration)
-        }
+        onActivated: backend.select(backend.playhead,
+                                    backend.hasSelection ? backend.selectionEnd : backend.duration)
     }
     Shortcut {
         sequence: "O"; enabled: !win.typing
-        onActivated: {
-            const t = backend.playing ? backend.playhead : backend.cursor
-            backend.select(backend.hasSelection ? backend.selectionStart : 0, t)
-        }
+        onActivated: backend.select(backend.hasSelection ? backend.selectionStart : 0,
+                                    backend.playhead)
     }
     Shortcut { sequence: "M"; enabled: !win.typing; onActivated: backend.beginSection() }
     Shortcut { sequence: "Shift+M"; enabled: !win.typing; onActivated: backend.sectionFromSelection() }
@@ -371,8 +367,12 @@ ApplicationWindow {
                 viewStart: win.viewStart
                 viewEnd: win.viewEnd
                 accent: theme.accent
-                // Click or drag pans the main view; zoom stays on the wave.
-                onViewMoveRequested: t => win.centerOn(t)
+                // Only ever moves the window: the span is preserved, so the
+                // zoom stays exactly where the wave's zoom controls set it.
+                onViewPanRequested: start => {
+                    win.viewStart = start
+                    win.clampView()
+                }
             }
 
             // ---------------------------------------------------- sections  ---

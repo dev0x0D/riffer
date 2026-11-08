@@ -41,11 +41,11 @@ Rectangle {
 
                 // A binding, not a model, so a language switch retranslates.
                 readonly property var rows: [
-                    { k: "Space", d: qsTr("Play from the loop start; stop keeps the spot as the next start") },
+                    { k: "Space", d: qsTr("Play from the start cursor; stop keeps the playhead where it stopped") },
                     { k: "[  ]", d: qsTr("Slower / faster by 5%") },
                     { k: "{  }", d: qsTr("Slower / faster by 1%") },
                     { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 95%, 85%, 75% — the slider covers the rest") },
-                    { k: "←  →", d: qsTr("Nudge the playhead by 2 s (Shift: 10 s)") },
+                    { k: "←  →", d: qsTr("Nudge the position by 2 s (Shift: 10 s) — while stopped it moves the start cursor") },
                     { k: "I  O", d: qsTr("Set selection start / end at the playhead") },
                     { k: "M", d: qsTr("Mark a section: press at the start, then the end") },
                     { k: "Shift+M", d: qsTr("Make a section from the selection") },

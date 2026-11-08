@@ -194,16 +194,13 @@ void Backend::togglePlay() {
     if (!ready())
         return;
     if (m_player.playing()) {
-        // Stopping keeps the spot: it becomes the cursor and the next start,
-        // so listening through a track can mark where to pick up again.
+        // Stopping leaves the start cursor untouched; the playhead simply
+        // stays where it stopped, as a bookmark the start cursor can be
+        // placed at (or near) with a click or the arrow keys.
         const double stoppedAt = qBound(0.0, m_player.inputPosition(), m_duration);
         m_player.stop();
         m_tick.stop();
-        m_cursor = stoppedAt;
-        emit cursorChanged();
         setPlayhead(stoppedAt);
-        applyLoopToPlayer();
-        scheduleSave();
     } else {
         applyLoopToPlayer();
         m_player.play();
@@ -272,7 +269,9 @@ void Backend::seekRelative(double delta) {
         m_player.seek(qBound(base, m_playhead + delta, loopEnd() - 0.01));
         setPlayhead(m_player.inputPosition());
     } else {
-        setCursor(m_cursor + delta);
+        // While stopped the arrows fine-tune around the visible playhead,
+        // which is where the eye is after a stop mid-track.
+        setCursor(qBound(0.0, m_playhead + delta, m_duration));
         emit centerRequested(m_cursor);
     }
 }
@@ -291,7 +290,7 @@ void Backend::nudgeSpeed(double delta) {
 
 // -------------------------------------------------------------- sections ---
 
-double Backend::markerTime() const { return m_player.playing() ? m_playhead : m_cursor; }
+double Backend::markerTime() const { return m_playhead; }
 
 void Backend::beginSection() {
     if (!ready())

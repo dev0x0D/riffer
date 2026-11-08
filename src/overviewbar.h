@@ -37,7 +37,9 @@ signals:
     void trackChanged();
     void viewChanged();
     void themeChanged();
-    void viewMoveRequested(double centerTime);
+    // The proposed new left edge of the view window; the span never changes,
+    // so panning the strip cannot alter the main view's zoom.
+    void viewPanRequested(double newViewStart);
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -53,5 +55,6 @@ private:
     double m_viewEnd = 1;
     QColor m_accent = QColor("#FFD60A");
     bool m_panning = false;
+    double m_grabOffset = 0; // pointer position inside the window, seconds
     QVector<QMetaObject::Connection> m_connections;
 };
