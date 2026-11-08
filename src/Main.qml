@@ -179,6 +179,21 @@ ApplicationWindow {
                     }
                 }
                 Item { Layout.fillWidth: true }
+                // Volume in the corner: always within reach, and visibly
+                // separate from the speed slider in the transport bar.
+                RowLayout {
+                    spacing: 6
+                    Label { text: qsTr("Vol"); font.pixelSize: 11; color: "#8a8a92" }
+                    Slider {
+                        id: volumeSlider
+                        from: 0
+                        to: 1
+                        stepSize: 0.01
+                        value: backend.volume
+                        Layout.preferredWidth: 90
+                        onMoved: backend.setVolume(value)
+                    }
+                }
                 Button {
                     flat: true
                     text: qsTr("Open")
@@ -496,53 +511,8 @@ ApplicationWindow {
                         }
                     }
 
-                    // Volume lives in a button with a popover slider, so the
-                    // bar keeps a single visible slider (speed).
-                    Button {
-                        id: volumeButton
-                        flat: true
-                        font.pixelSize: 11
-                        text: qsTr("Vol")
-                        onClicked: volumePopup.open()
-
-                        Popup {
-                            id: volumePopup
-                            y: -implicitHeight - 8
-                            x: parent.width - width
-                            padding: 12
-                            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
-                            background: Rectangle {
-                                color: "#1c1c22"
-                                radius: 8
-                                border.color: "#26ffffff"
-                            }
-                            contentItem: RowLayout {
-                                spacing: 10
-                                Label {
-                                    text: qsTr("Vol")
-                                    font.pixelSize: 11
-                                    color: "#8a8a92"
-                                }
-                                Slider {
-                                    id: volumeSlider
-                                    from: 0
-                                    to: 1
-                                    stepSize: 0.01
-                                    value: backend.volume
-                                    implicitWidth: 150
-                                    onMoved: backend.setVolume(value)
-                                }
-                                Label {
-                                    text: Math.round(backend.volume * 100) + "%"
-                                    color: "#d8d8de"
-                                    font.pixelSize: 11
-                                    font.family: "monospace"
-                                    Layout.preferredWidth: 34
-                                    horizontalAlignment: Text.AlignRight
-                                }
-                            }
-                        }
-                    }
+                    // Volume lives in the header corner, out of the speed
+                    // slider's way; this bar is about time and speed.
                 }
             }
         }
