@@ -41,7 +41,7 @@ Rectangle {
 
                 // A binding, not a model, so a language switch retranslates.
                 readonly property var rows: [
-                    { k: "Space", d: qsTr("Play, or stop and return to the loop start") },
+                    { k: "Space", d: qsTr("Play from the loop start; stop keeps the spot as the next start") },
                     { k: "[  ]", d: qsTr("Slower / faster by 5%") },
                     { k: "{  }", d: qsTr("Slower / faster by 1%") },
                     { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 75%, 50%, 25%") },

@@ -56,13 +56,8 @@ Backend::Backend(Decoder *decoder, FilePicker *picker, QObject *parent) : QObjec
     connect(m_picker, &FilePicker::openSelected, this, &Backend::openPath);
     connect(m_picker, &FilePicker::failed, this, &Backend::setError);
 
-    connect(&m_player, &Player::playingChanged, this, [this] {
-        emit playingChanged();
-        // Stopping returns the playhead to the start of the loop context, so
-        // the next Space starts over from the beginning, cursor or selection.
-        if (!m_player.playing())
-            setPlayhead(loopStart());
-    });
+    connect(&m_player, &Player::playingChanged, this,
+            [this] { emit playingChanged(); });
     connect(&m_player, &Player::speedChanged, this,
             [this](double) { emit speedChanged(); scheduleSave(); });
     connect(&m_player, &Player::volumeChanged, this,
@@ -199,8 +194,16 @@ void Backend::togglePlay() {
     if (!ready())
         return;
     if (m_player.playing()) {
+        // Stopping keeps the spot: it becomes the cursor and the next start,
+        // so listening through a track can mark where to pick up again.
+        const double stoppedAt = qBound(0.0, m_player.inputPosition(), m_duration);
         m_player.stop();
         m_tick.stop();
+        m_cursor = stoppedAt;
+        emit cursorChanged();
+        setPlayhead(stoppedAt);
+        applyLoopToPlayer();
+        scheduleSave();
     } else {
         applyLoopToPlayer();
         m_player.play();

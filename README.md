@@ -18,8 +18,8 @@ see the whole track, and loop passages until they sit under your fingers.
   (fit selection) and `0` (fit track). Click sets the play position; drag
   selects a passage; drag either edge to fine-tune it.
 - Loops by default: the whole track, from the cursor, or the selection —
-  whichever is furthest along. `Space` plays; `Space` again stops and arms
-  the next start from the beginning of that loop context.
+  whichever is furthest along. `Space` plays; `Space` again stops where you
+  are and that spot becomes the next start.
 - Marks named sections (`M` at the start, `M` again at the end, `Shift+M`
   for the selection) with a panel (`Tab`) to jump, rename, play or delete.
   Sections, speed, cursor and selection are saved to a
@@ -29,7 +29,7 @@ see the whole track, and loop passages until they sit under your fingers.
 
 | Key | Action |
 | --- | --- |
-| `Space` | Play, or stop and return to the loop start |
+| `Space` | Play from the loop start; stop keeps the spot as the next start |
 | `[` `]` | Slower / faster by 5% |
 | `{` `}` | Slower / faster by 1% |
 | `1` `2` `3` `4` | Speed presets 100%, 75%, 50%, 25% |

@@ -17,7 +17,7 @@
   "Open file": "Открыть файл",
   "…or drop a file anywhere in this window": "…или перетащите файл в это окно",
   "Keyboard shortcuts": "Горячие клавиши",
-  "Play, or stop and return to the loop start": "Играть или остановить с возвратом к началу цикла",
+  "Play from the loop start; stop keeps the spot as the next start": "Играть с начала цикла; стоп запоминает место для продолжения",
   "Slower / faster by 5%": "Медленнее / быстрее на 5%",
   "Slower / faster by 1%": "Медленнее / быстрее на 1%",
   "Speed presets: 100%, 75%, 50%, 25%": "Скорость: 100%, 75%, 50%, 25%",
