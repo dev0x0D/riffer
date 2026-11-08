@@ -52,7 +52,11 @@ ApplicationWindow {
         clampView()
     }
     function centerOn(t) {
-        viewStart = t - span() / 2
+        const sp = span()
+        viewStart = t - sp / 2
+        // viewEnd must move with viewStart: clampView keeps the span of the
+        // pair it sees, and a half-updated pair would silently rezoom.
+        viewEnd = viewStart + sp
         clampView()
     }
     function followPlayhead() {
@@ -61,9 +65,11 @@ ApplicationWindow {
         const sp = span()
         if (backend.playhead > viewEnd - sp * 0.08) {
             viewStart = backend.playhead - sp * 0.08
+            viewEnd = viewStart + sp
             clampView()
         } else if (backend.playhead < viewStart) {
             viewStart = Math.max(0, backend.playhead - sp * 0.08)
+            viewEnd = viewStart + sp
             clampView()
         }
     }
@@ -315,9 +321,10 @@ ApplicationWindow {
                         if (wheel.modifiers & Qt.ControlModifier) {
                             win.zoomAt(wheel.x, wheel.angleDelta.y > 0 ? 0.8 : 1.25)
                         } else {
-                            const ticks = (wheel.angleDelta.x - wheel.angleDelta.y) / 120
-                            win.viewStart += ticks * win.span() * 0.15
-                            win.viewEnd += ticks * win.span() * 0.15
+                            const sp = win.span()
+                            const shift = (wheel.angleDelta.x - wheel.angleDelta.y) / 120 * sp * 0.15
+                            win.viewStart += shift
+                            win.viewEnd += shift
                             win.clampView()
                         }
                     }
@@ -367,10 +374,13 @@ ApplicationWindow {
                 viewStart: win.viewStart
                 viewEnd: win.viewEnd
                 accent: theme.accent
-                // Only ever moves the window: the span is preserved, so the
-                // zoom stays exactly where the wave's zoom controls set it.
+                // Only ever moves the window: the span is captured first and
+                // both edges move together, so the zoom stays as the wave's
+                // zoom controls set it.
                 onViewPanRequested: start => {
+                    const sp = win.span()
                     win.viewStart = start
+                    win.viewEnd = start + sp
                     win.clampView()
                 }
             }
