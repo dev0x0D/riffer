@@ -3,12 +3,15 @@
 #include <QFileInfo>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QAudioDevice>
+#include <QMediaDevices>
 #include <QTemporaryDir>
 #include <QtTest>
 
 #include "backend.h"
 #include "clock.h"
 #include "decoder.h"
+#include "metronome.h"
 #include "peaks.h"
 #include "theme.h"
 #include "translator.h"
@@ -114,6 +117,91 @@ private slots:
         QCOMPARE(qint64(frames.size()), 48000 * 2);
         QCOMPARE(decoded.first().at(1).toDouble(), 1.0); // seconds
         QVERIFY(decoder.takeFrames().empty());           // ownership moved out
+    }
+
+    // ----------------------------------------------------------- metronome
+    void metronomeTapTempo() {
+        Metronome metronome;
+        QCOMPARE(metronome.bpm(), 120);
+
+        metronome.tapAt(0);
+        metronome.tapAt(500);   // 500 ms apart -> 120 BPM
+        QCOMPARE(metronome.bpm(), 120);
+        metronome.tapAt(750);   // average 375 ms -> 160 BPM
+        QCOMPARE(metronome.bpm(), 160);
+
+        // A slow tap resets the series instead of wrecking the average.
+        metronome.tapAt(4000);
+        QCOMPARE(metronome.bpm(), 160);
+        metronome.tapAt(4600);  // series restarts: 600 ms -> 100 BPM
+        QCOMPARE(metronome.bpm(), 100);
+        metronome.tapAt(4800);  // the stray 600 ms drags the average to 400 ms
+        QCOMPARE(metronome.bpm(), 150);
+        metronome.tapAt(5000);
+        QCOMPARE(metronome.bpm(), 180);
+
+        // A pause starts over: two taps 200 ms apart set 300 BPM.
+        metronome.tapAt(9000); // stale (> 2 s), a new series begins
+        QCOMPARE(metronome.bpm(), 180);
+        metronome.tapAt(9200);
+        QCOMPARE(metronome.bpm(), 300);
+
+        // Anything slower than 2 s per tap starts over instead of averaging,
+        // so an stray tap can never yank the tempo; a lone tap is a no-op.
+        metronome.tapAt(12000);
+        metronome.tapAt(18000);
+        QCOMPARE(metronome.bpm(), 300);
+    }
+
+    void metronomeClampsAndSynthesizes() {
+        Metronome metronome;
+        metronome.setBpm(999);
+        QCOMPARE(metronome.bpm(), 300);
+        metronome.setBpm(1);
+        QCOMPARE(metronome.bpm(), 30);
+        metronome.setBeatsPerBar(0);
+        QCOMPARE(metronome.beatsPerBar(), 1);
+        metronome.setBeatsPerBar(12);
+        QCOMPARE(metronome.beatsPerBar(), 7);
+        metronome.setSound(99);
+        QCOMPARE(metronome.sound(), Metronome::kSoundCount - 1);
+        metronome.setGain(2.0);
+        QCOMPARE(metronome.gain(), 1.0);
+
+        // Every synthesized click is finite and peak-normalized; the accent
+        // is its own, brighter buffer so the two are never confused.
+        for (int sound = 0; sound < Metronome::kSoundCount; ++sound) {
+            const QVector<float> plain = metronome.clickSamples(sound, false);
+            const QVector<float> accent = metronome.clickSamples(sound, true);
+            QVERIFY(!plain.isEmpty());
+            QVERIFY(plain != accent);
+            for (const auto *click : { &plain, &accent }) {
+                float peak = 0.0f;
+                for (const float v : *click) {
+                    QVERIFY(qIsFinite(v));
+                    peak = qMax(peak, qAbs(v));
+                }
+                QVERIFY2(peak <= 1.0001f, "click peaks are normalized");
+            }
+        }
+    }
+
+    void metronomeEnableFollowsTheDevice() {
+        Metronome metronome;
+        QSignalSpy errors(&metronome, &Metronome::errorOccurred);
+        QSignalSpy enabled(&metronome, &Metronome::enabledChanged);
+        if (QMediaDevices::defaultAudioOutput().isNull()) {
+            // No device: enabling refuses and reports instead of half-starting.
+            metronome.setEnabled(true);
+            QVERIFY(!metronome.enabled());
+            QCOMPARE(errors.count(), 1);
+        } else {
+            metronome.setEnabled(true);
+            QVERIFY(metronome.enabled());
+            QCOMPARE(enabled.count(), 1);
+            metronome.setEnabled(false);
+            QVERIFY(!metronome.enabled());
+        }
     }
 
     // -------------------------------------------------------------- backend

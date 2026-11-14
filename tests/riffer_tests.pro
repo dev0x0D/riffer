@@ -12,6 +12,7 @@ HEADERS += \
     ../src/clock.h \
     ../src/decoder.h \
     ../src/filepicker.h \
+    ../src/metronome.h \
     ../src/peaks.h \
     ../src/player.h \
     ../src/portalfilepicker.h \
@@ -23,6 +24,7 @@ SOURCES += \
     ../src/backend.cpp \
     ../src/clock.cpp \
     ../src/decoder.cpp \
+    ../src/metronome.cpp \
     ../src/peaks.cpp \
     ../src/player.cpp \
     ../src/portalfilepicker.cpp \

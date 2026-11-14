@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "decoder.h"
+#include "metronome.h"
 #include "peaks.h"
 #include "player.h"
 
@@ -50,6 +51,9 @@ class Backend : public QObject {
     // Opt-in sidecar persistence: off by default, so a track does not grow
     // a .riffer.json unless it was asked for on this track.
     Q_PROPERTY(bool persist READ persist WRITE setPersist NOTIFY persistChanged)
+    // The metronome as an object rather than forwarded properties: QML binds
+    // to several of its values at once. It clicks with the track or alone.
+    Q_PROPERTY(QObject* metronome READ metronome CONSTANT)
 
 public:
     struct Section {
@@ -87,6 +91,7 @@ public:
     bool canUndo() const;
     bool canRedo() const;
     bool persist() const;
+    QObject *metronome(); // non-const: returns the member through a base pointer
 
 public slots:
     void setCursor(double sec);
@@ -182,6 +187,7 @@ private:
     std::vector<QJsonArray> m_redo;
     QTimer m_saveTimer; // debounced sidecar autosave
     QTimer m_tick;      // playhead refresh while playing
+    Metronome m_metronome; // standalone click track, independent of the Player
     bool m_dirty = false;
     bool m_persist = false; // opt-in sidecar writing, off until asked for
 };

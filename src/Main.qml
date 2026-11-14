@@ -133,6 +133,7 @@ ApplicationWindow {
     Shortcut { sequence: "Shift+Right"; enabled: !win.typing; onActivated: backend.seekRelative(5) }
     Shortcut { sequence: "Up"; enabled: !win.typing; onActivated: backend.nudgeVolume(0.05) }
     Shortcut { sequence: "Down"; enabled: !win.typing; onActivated: backend.nudgeVolume(-0.05) }
+    Shortcut { sequence: "B"; enabled: !win.typing; onActivated: backend.metronome.enabled = !backend.metronome.enabled }
     Shortcut { sequence: "Home"; enabled: !win.typing; onActivated: { backend.setCursor(0); win.centerOn(0) } }
     Shortcut { sequence: "End"; enabled: !win.typing; onActivated: { backend.setCursor(Math.max(0, backend.duration - 0.05)); win.centerOn(backend.cursor) } }
     Shortcut {
@@ -536,6 +537,49 @@ ApplicationWindow {
                         }
                     }
 
+                    // Metronome chip: single click toggles the click track
+                    // (alongside the track or standalone for exercises);
+                    // double click opens the settings popup. A short timer
+                    // tells the two apart, so the toggle fires only when no
+                    // second click follows.
+                    Rectangle {
+                        id: metroChip
+                        height: 26
+                        radius: 13
+                        width: metroLabel.implicitWidth + 24
+                        color: backend.metronome.enabled ? "#2a2a33" : "transparent"
+                        border.color: backend.metronome.enabled ? theme.accent : "#3d3d47"
+                        border.width: 1
+                        Label {
+                            id: metroLabel
+                            anchors.centerIn: parent
+                            text: "♪ " + (backend.metronome.enabled
+                                          ? backend.metronome.bpm
+                                          : qsTr("Metronome"))
+                            color: backend.metronome.enabled ? theme.accent : "#8a8a92"
+                            font.pixelSize: 11
+                        }
+                        MouseArea {
+                            id: metroMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: metroClickTimer.restart()
+                            onDoubleClicked: {
+                                metroClickTimer.stop()
+                                metroPopup.open()
+                            }
+                            ToolTip.visible: metroMouse.containsMouse
+                            ToolTip.delay: 600
+                            ToolTip.text: qsTr("Metronome: click to turn on or off, double-click for settings (B)")
+                        }
+                        Timer {
+                            id: metroClickTimer
+                            interval: 260
+                            onTriggered: backend.metronome.enabled = !backend.metronome.enabled
+                        }
+                    }
+
                     Item { Layout.fillWidth: true }
 
                     // Speed presets and fine control.
@@ -603,6 +647,11 @@ ApplicationWindow {
         id: sectionDialog
         onAcceptedNamed: name => backend.confirmSection(name)
         onRejected: backend.cancelSection()
+    }
+
+    MetronomePopup {
+        id: metroPopup
+        objectName: "metroPopup"
     }
 
     HelpOverlay {

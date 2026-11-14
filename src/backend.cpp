@@ -63,6 +63,7 @@ Backend::Backend(Decoder *decoder, FilePicker *picker, QObject *parent) : QObjec
     connect(&m_player, &Player::volumeChanged, this,
             [this](double) { emit volumeChanged(); scheduleSave(); });
     connect(&m_player, &Player::errorOccurred, this, &Backend::setError);
+    connect(&m_metronome, &Metronome::errorOccurred, this, &Backend::setError);
 
     m_tick.setInterval(33);
     connect(&m_tick, &QTimer::timeout, this,
@@ -97,6 +98,8 @@ double Backend::speed() const { return m_player.speed(); }
 double Backend::volume() const { return m_player.volume(); }
 
 bool Backend::persist() const { return m_persist; }
+
+QObject *Backend::metronome() { return &m_metronome; }
 bool Backend::sectionPending() const { return m_sectionPending; }
 double Backend::sectionPendingAt() const { return m_sectionPendingAt; }
 bool Backend::canUndo() const { return !m_undo.empty(); }
@@ -206,8 +209,12 @@ void Backend::togglePlay() {
     } else {
         applyLoopToPlayer();
         m_player.play();
-        if (m_player.playing())
+        if (m_player.playing()) {
+            // With the click running, beat one lands on the play start.
+            if (m_metronome.enabled())
+                m_metronome.restart();
             m_tick.start();
+        }
     }
 }
 

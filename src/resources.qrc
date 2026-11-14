@@ -3,6 +3,7 @@
         <file alias="Main.qml">Main.qml</file>
         <file alias="EmptyState.qml">EmptyState.qml</file>
         <file alias="HelpOverlay.qml">HelpOverlay.qml</file>
+        <file alias="MetronomePopup.qml">MetronomePopup.qml</file>
         <file alias="SectionDialog.qml">SectionDialog.qml</file>
         <file alias="SectionsPanel.qml">SectionsPanel.qml</file>
         <file alias="i18n/en.json">i18n/en.json</file>
