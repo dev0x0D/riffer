@@ -487,6 +487,45 @@ ApplicationWindow {
                     anchors.rightMargin: 16
                     spacing: 12
 
+                    // |◀ Back to start: the selection drops and every marker
+                    // parks at zero; a running track keeps playing from the
+                    // top, a stopped one stays stopped.
+                    Rectangle {
+                        width: 46
+                        height: 46
+                        radius: 23
+                        color: rewindMouse.containsMouse ? "#22ffffff" : "transparent"
+                        border.color: "#3d3d47"
+                        border.width: 1
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: 2
+                            Rectangle {
+                                width: 2
+                                height: 14
+                                radius: 1
+                                color: "#f0f0f4"
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            Label {
+                                text: "◀"
+                                color: "#f0f0f4"
+                                font.pixelSize: 13
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+                        MouseArea {
+                            id: rewindMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: backend.rewindToStart()
+                            ToolTip.visible: rewindMouse.containsMouse
+                            ToolTip.delay: 600
+                            ToolTip.text: qsTr("Back to start: cursors to zero; if playing, it keeps playing from zero")
+                        }
+                    }
+
                     Rectangle {
                         width: 46
                         height: 46

@@ -101,6 +101,7 @@ public slots:
     Q_INVOKABLE void open();                     // through the portal picker
     Q_INVOKABLE void openPath(const QUrl &url);
     Q_INVOKABLE void togglePlay();
+    Q_INVOKABLE void rewindToStart();            // |◀: cursors to zero, keep playing if playing
     Q_INVOKABLE void nudgeSpeed(double delta);
     Q_INVOKABLE void nudgeVolume(double delta);  // arrow up/down, ±delta
     Q_INVOKABLE void seekRelative(double delta); // arrows; moves the start cursor while stopped

@@ -218,6 +218,23 @@ void Backend::togglePlay() {
     }
 }
 
+void Backend::rewindToStart() {
+    if (!ready())
+        return;
+    const bool wasPlaying = m_player.playing();
+    if (wasPlaying) {
+        m_player.stop();
+        m_tick.stop();
+    }
+    // Everything back to the top: the selection drops (so the loop is the
+    // whole track again), the start cursor and the playhead park at zero.
+    clearSelection();
+    setCursor(0);
+    setPlayhead(0);
+    if (wasPlaying)
+        togglePlay(); // applyLoopToPlayer + play() restart from the loop start: zero
+}
+
 void Backend::applyLoopToPlayer() {
     if (!ready())
         return;

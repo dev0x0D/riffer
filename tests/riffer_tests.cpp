@@ -253,6 +253,22 @@ private slots:
             QCOMPARE(backend.sectionAtTime(0.2), 0);
             QCOMPARE(backend.sectionAtTime(0.95), -1);
 
+            // |◀ Back to start while stopped: the selection drops, every
+            // marker parks at zero, and nothing starts playing.
+            backend.setCursor(0.3);
+            backend.rewindToStart();
+            QVERIFY(!backend.playing());
+            QVERIFY(!backend.hasSelection());
+            QCOMPARE(backend.loopMode(), 0);
+            QCOMPARE(backend.cursor(), 0.0);
+            QCOMPARE(backend.playhead(), 0.0);
+            QCOMPARE(backend.sections().size(), 1); // sections are marks, not cursors
+
+            // Practice goes on: the passage is selected again for the state
+            // the sidecar below is about to capture.
+            backend.select(0.1, 0.6);
+            QCOMPARE(backend.loopMode(), 2);
+
             // Persistence is opt-in; enabling it writes the sidecar at once.
             backend.setPersist(true);
             QTRY_VERIFY_WITH_TIMEOUT(QFile::exists(Backend::sidecarPath(track)), 4000);
