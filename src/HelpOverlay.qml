@@ -14,12 +14,14 @@ Rectangle {
 
     ColumnLayout {
         anchors.centerIn: parent
-        width: Math.min(560, parent.width - 48)
-        spacing: 12
+        // The compact window is wide but short, so the shortcuts run in two
+        // columns inside one card and the card stays within the height.
+        width: Math.min(1000, parent.width - 48)
+        spacing: 8
 
         Rectangle {
             Layout.fillWidth: true
-            Layout.preferredHeight: helpColumn.implicitHeight + 48
+            implicitHeight: helpColumn.implicitHeight + 28
             radius: Math.min(10, theme.radius)
             color: "#17171d"
             border.color: "#20ffffff"
@@ -27,8 +29,11 @@ Rectangle {
 
             ColumnLayout {
                 id: helpColumn
-                anchors.fill: parent
-                anchors.margins: 20
+
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.margins: 14
                 spacing: 6
 
                 Label {
@@ -36,12 +41,12 @@ Rectangle {
                     font.pixelSize: 15
                     font.bold: true
                     color: "#f0f0f4"
-                    Layout.bottomMargin: 8
                 }
 
                 // A binding, not a model, so a language switch retranslates.
                 readonly property var rows: [
                     { k: "Space", d: qsTr("Play from the start cursor; stop keeps the playhead where it stopped") },
+                    { k: "|<", d: qsTr("Back to start: cursors to zero; if playing, it keeps playing from zero") },
                     { k: "[  ]", d: qsTr("Slower / faster by 5%") },
                     { k: "{  }", d: qsTr("Slower / faster by 1%") },
                     { k: "1 2 3 4", d: qsTr("Speed presets: 100%, 90%, 80%, 70% — the slider covers the rest") },
@@ -61,45 +66,58 @@ Rectangle {
                     { k: "Esc", d: qsTr("Clear the selection, close panels and dialogs") },
                     { k: "Q", d: qsTr("Quit") }
                 ]
+                // The left column takes the first half, the right the rest.
+                readonly property int columnBreak: Math.ceil(rows.length / 2)
 
-                Repeater {
-                    model: helpColumn.rows
-                    delegate: RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 12
-                        Label {
-                            text: modelData.k
-                            color: theme.accent
-                            font.pixelSize: 12
-                            font.family: "monospace"
-                            Layout.preferredWidth: 150
-                        }
-                        Label {
-                            text: modelData.d
-                            color: "#c8c8ce"
-                            font.pixelSize: 12
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 28
+
+                    Repeater {
+                        model: 2
+                        delegate: ColumnLayout {
+                            id: column
+                            required property int index
                             Layout.fillWidth: true
-                            wrapMode: Text.WordWrap
+                            spacing: 4
+
+                            Repeater {
+                                model: column.index === 0
+                                       ? helpColumn.rows.slice(0, helpColumn.columnBreak)
+                                       : helpColumn.rows.slice(helpColumn.columnBreak)
+                                delegate: RowLayout {
+                                    required property var modelData
+                                    Layout.fillWidth: true
+                                    spacing: 10
+                                    Label {
+                                        text: modelData.k
+                                        color: theme.accent
+                                        font.pixelSize: 11
+                                        font.family: "monospace"
+                                        Layout.preferredWidth: 140
+                                    }
+                                    Label {
+                                        text: modelData.d
+                                        color: "#c8c8ce"
+                                        font.pixelSize: 11
+                                        Layout.fillWidth: true
+                                        wrapMode: Text.WordWrap
+                                    }
+                                }
+                            }
                         }
                     }
                 }
 
                 Label {
-                    Layout.topMargin: 10
-                    text: qsTr("Click sets the play position; drag to loop a passage. The strip under the wave shows the whole track — click or drag it to move the view window.")
+                    Layout.topMargin: 2
+                    text: qsTr("Click sets the play position; drag to loop a passage. Esc or a click anywhere closes this.")
                     color: "#8a8a92"
                     font.pixelSize: 11
                     wrapMode: Text.WordWrap
                     Layout.fillWidth: true
                 }
             }
-        }
-
-        Label {
-            Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Press Esc or click anywhere to close")
-            color: "#8a8a92"
-            font.pixelSize: 11
         }
     }
 }

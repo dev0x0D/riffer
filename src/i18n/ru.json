@@ -53,7 +53,7 @@
   "Clear the selection, close panels and dialogs": "Сбросить выделение, закрыть панели и диалоги",
   "Quit": "Выход",
   "Press Esc or click anywhere to close": "Нажмите Esc или щёлкните в любом месте, чтобы закрыть",
-  "Click sets the play position; drag to loop a passage. The strip under the wave shows the whole track — click or drag it to move the view window.": "Клик ставит позицию; протяжкой выделяется участок для цикла. Полоса под волной показывает весь трек — клик или протяжка по ней двигает окно просмотра.",
+  "Click sets the play position; drag to loop a passage. Esc or a click anywhere closes this.": "Клик ставит позицию; протяжкой выделяется участок для цикла. Esc или клик в любом месте закрывают это окно.",
   "Name the section": "Название секции",
   "Section name": "Название секции",
   "Save": "Сохранить",
